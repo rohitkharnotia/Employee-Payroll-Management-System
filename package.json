@@ -1,0 +1,12 @@
+{
+  "name": "employee-payroll-management-system",
+  "version": "1.0.0",
+  "description": "Employee Payroll Management System - Group 10",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "keywords": ["payroll", "java", "swing", "management-system"],
+  "author": "Group 10 (Rohit Kharnotia, Sankeit Sharma, Aryan, Gaganpreet Singh)",
+  "license": "MIT"
+}

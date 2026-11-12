@@ -76,7 +76,35 @@ Employee Payroll Management System/
 2. **MySQL Server 5.7+** — [Download](https://dev.mysql.com/downloads/mysql/)
 3. **MySQL Connector/J** — [Download](https://dev.mysql.com/downloads/connector/j/) (Place `mysql-connector-j-x.x.x.jar` in the project root)
 
-## Setup & Run
+## Deploying on Vercel
+
+This project includes a web client in [index.html](file:///c:/Users/rohit/OneDrive/Desktop/Employee%20Payroll%20Management%20System/index.html) and [app.js](file:///c:/Users/rohit/OneDrive/Desktop/Employee%20Payroll%20Management%20System/app.js) configured with [vercel.json](file:///c:/Users/rohit/OneDrive/Desktop/Employee%20Payroll%20Management%20System/vercel.json) for instant 1-click cloud deployment on Vercel.
+
+### Method 1: Deploy with Git & GitHub (Recommended)
+1. Push this folder to a GitHub repository:
+   ```bash
+   git init
+   git add .
+   git commit -m "Initial commit of Employee Payroll Management System"
+   git branch -M main
+   git remote add origin https://github.com/<your-username>/<repo-name>.git
+   git push -u origin main
+   ```
+2. Log into [Vercel](https://vercel.com).
+3. Click **"Add New"** &rarr; **"Project"**.
+4. Import your GitHub repository and click **Deploy**.
+5. Your live URL will be ready in seconds (e.g., `https://employee-payroll-group10.vercel.app`)!
+
+### Method 2: Deploy with Vercel CLI
+If you have Node.js and Vercel CLI installed:
+```bash
+npx vercel
+```
+Follow the prompts (accept default settings) and your site will be live instantly.
+
+---
+
+## Desktop Java Application (Swing + JDBC)
 
 ### Step 1: Create the Database
 ```bash

@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Payroll Management System — Group 10</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @media print {
+      body * { visibility: hidden; }
+      #slipPrintArea, #slipPrintArea * { visibility: visible; }
+      #slipPrintArea { position: absolute; left: 0; top: 0; width: 100%; }
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-slate-900 text-white shadow-lg border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+        <div class="flex items-center space-x-3">
+          <span class="bg-indigo-600 text-white text-xs uppercase px-2.5 py-1 rounded-md font-semibold tracking-wider">Group 10</span>
+          <h1 class="text-xl sm:text-2xl font-bold tracking-tight">Employee Payroll Management System</h1>
+        </div>
+        <p class="text-slate-400 text-xs sm:text-sm mt-1">A system to maintain employee data and compute salary slips with allowances and deductions.</p>
+      </div>
+      <!-- Team Members Pill -->
+      <div class="bg-slate-800/80 rounded-lg p-2.5 text-xs border border-slate-700">
+        <div class="font-semibold text-slate-300 mb-1 flex items-center gap-1.5">
+          <i class="fa-solid fa-users text-indigo-400"></i> Team Members:
+        </div>
+        <div class="grid grid-cols-2 gap-x-4 gap-y-0.5 text-slate-400">
+          <span><strong class="text-slate-200">Rohit Kharnotia</strong> (Leader) - 2510001265</span>
+          <span><strong class="text-slate-200">Sankeit Sharma</strong> - 2510001308</span>
+          <span><strong class="text-slate-200">Aryan</strong> - 2510001228</span>
+          <span><strong class="text-slate-200">Gaganpreet Singh</strong> - 2510001277</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex space-x-2 sm:space-x-4 overflow-x-auto py-2">
+        <button onclick="switchTab('tab-employees')" id="btn-tab-employees" class="nav-tab px-3 py-2 text-sm font-semibold rounded-md flex items-center gap-2 whitespace-nowrap bg-indigo-600 text-white">
+          <i class="fa-solid fa-user-plus"></i> Employee Registration
+        </button>
+        <button onclick="switchTab('tab-structure')" id="btn-tab-structure" class="nav-tab px-3 py-2 text-sm font-semibold rounded-md flex items-center gap-2 whitespace-nowrap text-slate-600 hover:bg-slate-100">
+          <i class="fa-solid fa-layer-group"></i> Salary Structure
+        </button>
+        <button onclick="switchTab('tab-calculate')" id="btn-tab-calculate" class="nav-tab px-3 py-2 text-sm font-semibold rounded-md flex items-center gap-2 whitespace-nowrap text-slate-600 hover:bg-slate-100">
+          <i class="fa-solid fa-calculator"></i> Monthly Calculation
+        </button>
+        <button onclick="switchTab('tab-slip')" id="btn-tab-slip" class="nav-tab px-3 py-2 text-sm font-semibold rounded-md flex items-center gap-2 whitespace-nowrap text-slate-600 hover:bg-slate-100">
+          <i class="fa-solid fa-file-invoice-dollar"></i> Salary Slip
+        </button>
+        <button onclick="switchTab('tab-report')" id="btn-tab-report" class="nav-tab px-3 py-2 text-sm font-semibold rounded-md flex items-center gap-2 whitespace-nowrap text-slate-600 hover:bg-slate-100">
+          <i class="fa-solid fa-chart-pie"></i> Department Report
+        </button>
+        <button onclick="switchTab('tab-syllabus')" id="btn-tab-syllabus" class="nav-tab px-3 py-2 text-sm font-semibold rounded-md flex items-center gap-2 whitespace-nowrap text-slate-600 hover:bg-slate-100">
+          <i class="fa-solid fa-book-open"></i> Syllabus & Java Code
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
+
+    <!-- TAB 1: EMPLOYEE REGISTRATION -->
+    <section id="tab-employees" class="tab-content space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Form -->
+        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+          <h2 class="text-lg font-bold text-slate-900 border-b pb-2 mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-id-card text-indigo-600"></i> Employee Form
+          </h2>
+          <form id="empForm" onsubmit="handleSaveEmployee(event)" class="space-y-4">
+            <input type="hidden" id="empIdInput" value="">
+            
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Full Name</label>
+              <input type="text" id="empNameInput" required placeholder="e.g. Rohit Kharnotia" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Employee Type</label>
+              <select id="empTypeInput" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
+                <option value="Manager">Manager (HRA 20%, DA 30%, PF 12%, Tax 10%)</option>
+                <option value="Clerk">Clerk (HRA 15%, DA 20%, PF 10%, Tax 5%)</option>
+                <option value="Teacher">Teacher (HRA 18%, DA 25%, PF 12%, Tax 8%)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Department</label>
+              <select id="empDeptInput" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
+                <!-- Dynamically loaded -->
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Basic Salary (₹)</label>
+              <input type="number" id="empSalaryInput" required min="1" step="0.01" placeholder="e.g. 75000" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
+            </div>
+
+            <div class="flex flex-wrap gap-2 pt-2">
+              <button type="submit" id="btnSubmitEmp" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-3 rounded-lg text-sm transition">
+                <i class="fa-solid fa-plus"></i> Add Employee
+              </button>
+              <button type="button" onclick="resetEmpForm()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold py-2 px-3 rounded-lg text-sm transition">
+                Clear
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Table & Search -->
+        <div class="lg:col-span-2 bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+            <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-list-check text-indigo-600"></i> Registered Employees
+            </h2>
+            <div class="relative w-full sm:w-64">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-sm"></i>
+              <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="Search by name..." class="w-full pl-9 pr-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            </div>
+          </div>
+
+          <div class="overflow-x-auto flex-1">
+            <table class="w-full text-left text-sm border-collapse">
+              <thead>
+                <tr class="bg-slate-100 text-slate-700 text-xs uppercase font-semibold">
+                  <th class="p-3 border-b">ID</th>
+                  <th class="p-3 border-b">Name</th>
+                  <th class="p-3 border-b">Type</th>
+                  <th class="p-3 border-b">Department</th>
+                  <th class="p-3 border-b">Basic Salary</th>
+                  <th class="p-3 border-b text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="empTableBody" class="divide-y divide-slate-100">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: SALARY STRUCTURE -->
+    <section id="tab-structure" class="tab-content hidden space-y-6">
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+        <h2 class="text-xl font-bold text-slate-900 mb-2 flex items-center gap-2">
+          <i class="fa-solid fa-sitemap text-indigo-600"></i> Salary Component Structure
+        </h2>
+        <p class="text-slate-500 text-sm mb-6">Configured salary rules applied by designations via OOP inheritance (Unit 2).</p>
+
+        <div class="overflow-x-auto mb-8">
+          <table class="w-full text-left text-sm border">
+            <thead>
+              <tr class="bg-slate-800 text-white text-xs uppercase">
+                <th class="p-3.5">Designation (Subclass)</th>
+                <th class="p-3.5">HRA (%)</th>
+                <th class="p-3.5">DA (%)</th>
+                <th class="p-3.5">PF Deduction (%)</th>
+                <th class="p-3.5">Tax Deduction (%)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200">
+              <tr class="hover:bg-slate-50">
+                <td class="p-3.5 font-semibold text-slate-900"><i class="fa-solid fa-briefcase text-indigo-500 mr-2"></i> Manager</td>
+                <td class="p-3.5">20% of Basic</td>
+                <td class="p-3.5">30% of Basic</td>
+                <td class="p-3.5 text-amber-700 font-medium">12% of Basic</td>
+                <td class="p-3.5 text-rose-700 font-medium">10% of Gross</td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="p-3.5 font-semibold text-slate-900"><i class="fa-solid fa-file-lines text-indigo-500 mr-2"></i> Clerk</td>
+                <td class="p-3.5">15% of Basic</td>
+                <td class="p-3.5">20% of Basic</td>
+                <td class="p-3.5 text-amber-700 font-medium">10% of Basic</td>
+                <td class="p-3.5 text-rose-700 font-medium">5% of Gross</td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="p-3.5 font-semibold text-slate-900"><i class="fa-solid fa-chalkboard-user text-indigo-500 mr-2"></i> Teacher</td>
+                <td class="p-3.5">18% of Basic</td>
+                <td class="p-3.5">25% of Basic</td>
+                <td class="p-3.5 text-amber-700 font-medium">12% of Basic</td>
+                <td class="p-3.5 text-rose-700 font-medium">8% of Gross</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-4 text-indigo-900 text-sm">
+          <h4 class="font-bold flex items-center gap-1.5 mb-1"><i class="fa-solid fa-circle-info text-indigo-600"></i> Calculation Formulas Applied:</h4>
+          <ul class="list-disc list-inside space-y-1 text-xs sm:text-sm">
+            <li><strong>Gross Salary</strong> = Basic Salary + HRA + DA</li>
+            <li><strong>Total Deductions</strong> = PF + Income Tax</li>
+            <li><strong>Net Take-Home Salary</strong> = Gross Salary − Total Deductions (Rounded using <code class="bg-indigo-100 px-1 rounded">Math.round()</code>)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: MONTHLY SALARY CALCULATION -->
+    <section id="tab-calculate" class="tab-content hidden space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Input Selector -->
+        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+          <h2 class="text-lg font-bold text-slate-900 border-b pb-2 mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-sliders text-indigo-600"></i> Select Employee & Period
+          </h2>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Select Employee</label>
+              <select id="calcEmpSelect" onchange="runSalaryCalculation()" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
+                <!-- Dynamically populated -->
+              </select>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Month</label>
+                <select id="calcMonthInput" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
+                  <option value="November" selected>November</option>
+                  <option value="December">December</option>
+                  <option value="October">October</option>
+                  <option value="September">September</option>
+                  <option value="August">August</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Year</label>
+                <input type="number" id="calcYearInput" value="2026" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
+              </div>
+            </div>
+
+            <div class="flex gap-2 pt-2">
+              <button onclick="runSalaryCalculation()" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white font-semibold py-2 px-4 rounded-lg text-sm transition">
+                <i class="fa-solid fa-arrows-rotate mr-1"></i> Recalculate
+              </button>
+              <button onclick="saveCalculatedSalary()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-lg text-sm transition">
+                <i class="fa-solid fa-floppy-disk mr-1"></i> Save to Records
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Breakdown Card -->
+        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+          <h2 class="text-lg font-bold text-slate-900 border-b pb-2 mb-4 flex items-center justify-between">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-receipt text-indigo-600"></i> Computed Breakdown</span>
+            <span id="calcBadgeType" class="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded font-semibold">Manager</span>
+          </h2>
+
+          <div class="space-y-2.5 text-sm">
+            <div class="flex justify-between py-1 border-b border-dashed">
+              <span class="text-slate-500">Basic Salary:</span>
+              <span id="breakdownBasic" class="font-semibold text-slate-800">₹0.00</span>
+            </div>
+            <div class="flex justify-between py-1 border-b border-dashed">
+              <span class="text-slate-500">House Rent Allowance (HRA):</span>
+              <span id="breakdownHra" class="font-semibold text-emerald-600">+₹0.00</span>
+            </div>
+            <div class="flex justify-between py-1 border-b border-dashed">
+              <span class="text-slate-500">Dearness Allowance (DA):</span>
+              <span id="breakdownDa" class="font-semibold text-emerald-600">+₹0.00</span>
+            </div>
+            <div class="flex justify-between py-1 border-b border-slate-300 font-medium">
+              <span class="text-slate-700">Gross Salary:</span>
+              <span id="breakdownGross" class="font-bold text-slate-900">₹0.00</span>
+            </div>
+            <div class="flex justify-between py-1 border-b border-dashed">
+              <span class="text-slate-500">Provident Fund (PF):</span>
+              <span id="breakdownPf" class="font-semibold text-rose-600">-₹0.00</span>
+            </div>
+            <div class="flex justify-between py-1 border-b border-dashed">
+              <span class="text-slate-500">Income Tax:</span>
+              <span id="breakdownTax" class="font-semibold text-rose-600">-₹0.00</span>
+            </div>
+            <div class="flex justify-between py-2 bg-emerald-50 px-3 rounded-lg border border-emerald-200 text-emerald-900 font-bold text-base mt-2">
+              <span>Net Take-Home Salary:</span>
+              <span id="breakdownNet">₹0.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: SALARY SLIP GENERATION -->
+    <section id="tab-slip" class="tab-content hidden space-y-6">
+      <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3 w-full sm:w-auto">
+          <label class="text-xs font-semibold text-slate-600 uppercase whitespace-nowrap">Employee:</label>
+          <select id="slipEmpSelect" class="w-full sm:w-64 px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <!-- Dynamically populated -->
+          </select>
+        </div>
+        <div class="flex gap-2 w-full sm:w-auto">
+          <button onclick="generateSalarySlip()" class="flex-1 sm:flex-none bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg text-sm transition">
+            <i class="fa-solid fa-file-lines mr-1"></i> Generate Slip
+          </button>
+          <button onclick="printSalarySlip()" class="flex-1 sm:flex-none bg-slate-800 hover:bg-slate-900 text-white font-semibold py-2 px-4 rounded-lg text-sm transition">
+            <i class="fa-solid fa-print mr-1"></i> Print Slip
+          </button>
+        </div>
+      </div>
+
+      <!-- Printable Slip Area -->
+      <div id="slipPrintArea" class="bg-white p-8 rounded-xl shadow-md border border-slate-300 max-w-2xl mx-auto font-mono text-sm leading-relaxed">
+        <div class="text-center border-b-2 border-slate-800 pb-3 mb-4">
+          <h3 class="text-lg font-bold text-slate-900 uppercase tracking-widest">Employee Payroll Management System</h3>
+          <p class="text-xs text-slate-600">Group 10 — Official Monthly Salary Slip</p>
+        </div>
+
+        <div id="slipContent">
+          <!-- Dynamically populated formatted monospace slip -->
+          <p class="text-slate-400 italic text-center py-8">Select an employee and click "Generate Slip" to view the payslip preview.</p>
+        </div>
+
+        <div class="mt-8 pt-4 border-t border-dashed border-slate-400 text-center text-xs text-slate-500">
+          * This is a computer-generated salary slip and requires no physical signature.
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: DEPARTMENT REPORT -->
+    <section id="tab-report" class="tab-content hidden space-y-6">
+      <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+        <div class="flex items-center justify-between mb-4 border-b pb-3">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-chart-simple text-indigo-600"></i> Department-Wise Salary Report
+            </h2>
+            <p class="text-slate-500 text-xs">Aggregated summary using SQL GROUP BY, SUM, AVG, COUNT (Unit 4).</p>
+          </div>
+          <button onclick="renderDepartmentReport()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-1.5 px-3 rounded-lg text-xs transition">
+            <i class="fa-solid fa-arrows-rotate mr-1"></i> Refresh
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm border">
+            <thead>
+              <tr class="bg-slate-800 text-white text-xs uppercase">
+                <th class="p-3">Department</th>
+                <th class="p-3 text-center">Total Employees</th>
+                <th class="p-3 text-right">Total Net Payout</th>
+                <th class="p-3 text-right">Average Salary</th>
+              </tr>
+            </thead>
+            <tbody id="deptReportTableBody" class="divide-y divide-slate-200">
+              <!-- Dynamically rendered -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 6: SYLLABUS CONCEPTS -->
+    <section id="tab-syllabus" class="tab-content hidden space-y-6">
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+        <h2 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-graduation-cap text-indigo-600"></i> Syllabus Concepts Applied (Units 1 to 5)
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="p-4 rounded-lg border border-slate-200 bg-slate-50">
+            <span class="inline-block px-2 py-0.5 text-xs font-bold bg-indigo-600 text-white rounded mb-2">Unit 1</span>
+            <h3 class="font-bold text-slate-900 mb-1">OOP Basics, Constructors, Math, Arrays</h3>
+            <p class="text-xs text-slate-600">Classes <code class="text-indigo-600 font-mono">Employee</code> and <code class="text-indigo-600 font-mono">Department</code>, parameterized constructors, <code class="text-indigo-600 font-mono">Math.round()</code> for currency precision, and breakdown component arrays.</p>
+          </div>
+
+          <div class="p-4 rounded-lg border border-slate-200 bg-slate-50">
+            <span class="inline-block px-2 py-0.5 text-xs font-bold bg-indigo-600 text-white rounded mb-2">Unit 2</span>
+            <h3 class="font-bold text-slate-900 mb-1">Inheritance, Polymorphism & Interface</h3>
+            <p class="text-xs text-slate-600">Interface <code class="text-indigo-600 font-mono">Payable</code> with overriding <code class="text-indigo-600 font-mono">calculateSalary()</code> in subclasses <code class="text-indigo-600 font-mono">Manager</code>, <code class="text-indigo-600 font-mono">Clerk</code>, and <code class="text-indigo-600 font-mono">Teacher</code> inside package <code class="text-indigo-600 font-mono">payroll.model</code>.</p>
+          </div>
+
+          <div class="p-4 rounded-lg border border-slate-200 bg-slate-50">
+            <span class="inline-block px-2 py-0.5 text-xs font-bold bg-indigo-600 text-white rounded mb-2">Unit 3</span>
+            <h3 class="font-bold text-slate-900 mb-1">Custom Exception & JavaBean Standards</h3>
+            <p class="text-xs text-slate-600">Custom checked exception <code class="text-indigo-600 font-mono">InvalidSalaryException</code> thrown when basic salary &le; 0. JavaBean conventions for private fields and getters/setters.</p>
+          </div>
+
+          <div class="p-4 rounded-lg border border-slate-200 bg-slate-50">
+            <span class="inline-block px-2 py-0.5 text-xs font-bold bg-indigo-600 text-white rounded mb-2">Unit 4</span>
+            <h3 class="font-bold text-slate-900 mb-1">JDBC CRUD & ExecuteQuery Reporting</h3>
+            <p class="text-xs text-slate-600">PreparedStatement CRUD operations in <code class="text-indigo-600 font-mono">EmployeeDAO</code>, and <code class="text-indigo-600 font-mono">Statement.executeQuery()</code> for department aggregate reports in <code class="text-indigo-600 font-mono">SalaryDAO</code>.</p>
+          </div>
+
+          <div class="p-4 rounded-lg border border-slate-200 bg-slate-50 md:col-span-2">
+            <span class="inline-block px-2 py-0.5 text-xs font-bold bg-indigo-600 text-white rounded mb-2">Unit 5</span>
+            <h3 class="font-bold text-slate-900 mb-1">Swing GUI Forms, Layouts & Event Handling</h3>
+            <p class="text-xs text-slate-600">JTextField, JLabel, JButton forms with GridLayout, JTable visualization, and ActionListener event handling across 5 tabbed panels in <code class="text-indigo-600 font-mono">MainFrame</code>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-400 py-4 text-center text-xs border-t border-slate-800">
+    <p>&copy; 2026 Group 10 — Employee Payroll Management System. Ready for live Vercel deployment.</p>
+  </footer>
+
+  <!-- Application Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
