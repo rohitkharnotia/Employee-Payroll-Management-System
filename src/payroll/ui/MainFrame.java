@@ -12,7 +12,7 @@ public class MainFrame extends JFrame {
     private DepartmentReportPanel departmentReportPanel;
 
     public MainFrame() {
-        setTitle("Employee Payroll Management System — Group 10");
+        setTitle("Employee Payroll Management System");
         setSize(950, 720);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
